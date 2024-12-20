@@ -1,0 +1,59 @@
+[gd_scene load_steps=8 format=3 uid="uid://cqgv3ovjyfjqx"]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_q0ros"]
+[ext_resource type="PackedScene" uid="uid://bc6uqt82umjye" path="res://player.tscn" id="1_swm1l"]
+[ext_resource type="Texture2D" uid="uid://epmb3d2gyw07" path="res://assets/textures/background/stars.PNG" id="2_gcxp6"]
+[ext_resource type="Texture2D" uid="uid://bgmanav3kid1b" path="res://assets/textures/background/Paint Layer 1.PNG" id="3_3g06n"]
+
+[sub_resource type="Environment" id="Environment_xqotd"]
+background_mode = 3
+glow_enabled = true
+glow_bloom = 0.2
+glow_hdr_threshold = 0.15
+glow_hdr_scale = 2.55
+glow_hdr_luminance_cap = 65.89
+
+[sub_resource type="Curve" id="Curve_w57p0"]
+_data = [Vector2(0.0549451, 0), 0.0, 0.0, 0, 0, Vector2(0.774725, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_y3gob"]
+width = 36
+curve = SubResource("Curve_w57p0")
+
+[node name="main" type="Node2D"]
+script = ExtResource("1_q0ros")
+metadata/_edit_vertical_guides_ = [240.0, 240.0]
+metadata/_edit_horizontal_guides_ = [30.0, 30.0]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_xqotd")
+
+[node name="player" parent="." instance=ExtResource("1_swm1l")]
+position = Vector2(303, 299)
+
+[node name="background" type="Node2D" parent="."]
+position = Vector2(300, 300)
+
+[node name="background" type="Sprite2D" parent="background"]
+scale = Vector2(16.6944, 600.5)
+texture = SubResource("CurveTexture_y3gob")
+
+[node name="overlay" type="Sprite2D" parent="background"]
+modulate = Color(1, 1, 1, 0.192157)
+position = Vector2(-2, 71)
+scale = Vector2(1.1, 1.1)
+texture = ExtResource("3_3g06n")
+
+[node name="stars" type="Node2D" parent="background"]
+modulate = Color(1, 1, 1, 0.0745098)
+
+[node name="stars1" type="Sprite2D" parent="background/stars"]
+texture = ExtResource("2_gcxp6")
+
+[node name="stars2" type="Sprite2D" parent="background/stars"]
+position = Vector2(565, 0)
+rotation = 1.57567
+texture = ExtResource("2_gcxp6")
+
+[node name="sidebars" type="Node2D" parent="."]

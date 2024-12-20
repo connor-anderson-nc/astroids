@@ -1,0 +1,82 @@
+[gd_scene load_steps=11 format=3 uid="uid://bc6uqt82umjye"]
+
+[ext_resource type="Texture2D" uid="uid://betp811vg17fh" path="res://assets/textures/player.png" id="1_bovi2"]
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_lga6d"]
+[ext_resource type="PackedScene" uid="uid://1h1uoybk7xxw" path="res://laser.tscn" id="2_mulbx"]
+
+[sub_resource type="Curve" id="Curve_jtia1"]
+_data = [Vector2(0.0933333, 0.813187), 0.0, 0.0, 0, 0, Vector2(0.633333, 0.0659341), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_s6yom"]
+curve = SubResource("Curve_jtia1")
+
+[sub_resource type="Gradient" id="Gradient_nmdu2"]
+colors = PackedColorArray(1, 1, 1, 1, 0.408329, 0.408329, 0.408329, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_mttg4"]
+gradient = SubResource("Gradient_nmdu2")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_grxhg"]
+particle_flag_disable_z = true
+gravity = Vector3(0, 100, 0)
+color_ramp = SubResource("GradientTexture1D_mttg4")
+alpha_curve = SubResource("CurveTexture_s6yom")
+
+[sub_resource type="Gradient" id="Gradient_hyk6n"]
+offsets = PackedFloat32Array(0, 0.376623, 0.714286, 1)
+colors = PackedColorArray(0.584, 0, 0.584, 0.008, 0.52582, 0.000197721, 0.525816, 1, 0.501229, 0.00474978, 0.504202, 1, 0.532, 0, 0.532, 0.008)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_lyt2h"]
+gradient = SubResource("Gradient_hyk6n")
+width = 3
+
+[node name="player" type="CharacterBody2D"]
+z_index = 5
+motion_mode = 1
+script = ExtResource("1_lga6d")
+laser = ExtResource("2_mulbx")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("1_bovi2")
+
+[node name="Collider" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(8, -19, 13, -15, 17, -9, 18, -1, 20, 12, 19, 17, 12, 19, 8, 13, -7, 13, -12, 19, -19, 17, -20, 11, -18, -1, -17, -9, -13, -15, -8, -19)
+
+[node name="trails" type="Node2D" parent="."]
+
+[node name="trail_right" type="GPUParticles2D" parent="trails"]
+modulate = Color(1.5, 1.5, 1.5, 1)
+z_index = -1
+position = Vector2(5, 4)
+scale = Vector2(1.36, 1)
+amount = 40
+process_material = SubResource("ParticleProcessMaterial_grxhg")
+texture = SubResource("GradientTexture1D_lyt2h")
+lifetime = 0.5
+preprocess = 1.0
+trail_enabled = true
+trail_lifetime = 0.5
+trail_sections = 16
+trail_section_subdivisions = 8
+
+[node name="trail_left" type="GPUParticles2D" parent="trails"]
+modulate = Color(1.5, 1.5, 1.5, 1)
+z_index = -1
+position = Vector2(-5, 4)
+scale = Vector2(1.36, 1)
+amount = 40
+process_material = SubResource("ParticleProcessMaterial_grxhg")
+texture = SubResource("GradientTexture1D_lyt2h")
+lifetime = 0.5
+preprocess = 1.0
+trail_enabled = true
+trail_lifetime = 0.5
+trail_sections = 16
+trail_section_subdivisions = 8
+
+[node name="laser_start" type="Marker2D" parent="."]
+position = Vector2(-8, -21)
+
+[node name="laser_start2" type="Marker2D" parent="."]
+position = Vector2(8, -21)
