@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://4vrt3d1qdm7g"
-path="res://.godot/imported/astroid1.png-efcd437d6c279bc78b0eef9e3f44640d.ctex"
+uid="uid://c4hl5nuqvfdlw"
+path="res://.godot/imported/heart background.png-0ccbefe8a8f5640e932134966a3d2601.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/textures/astroid1.png"
-dest_files=["res://.godot/imported/astroid1.png-efcd437d6c279bc78b0eef9e3f44640d.ctex"]
+source_file="res://assets/UI element/heart background.png"
+dest_files=["res://.godot/imported/heart background.png-0ccbefe8a8f5640e932134966a3d2601.ctex"]
 
 [params]
 

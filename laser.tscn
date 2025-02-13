@@ -10,7 +10,7 @@ size = Vector2(2, 6)
 polygon = PackedVector2Array(-2.5, 3, -2.5, -3, 2.5, -3, 2.5, 3)
 
 [node name="laser" type="RigidBody2D"]
-collision_layer = 0
+collision_layer = 2
 mass = 0.001
 gravity_scale = 0.0
 

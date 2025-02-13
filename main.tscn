@@ -1,9 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://cqgv3ovjyfjqx"]
+[gd_scene load_steps=12 format=3 uid="uid://cqgv3ovjyfjqx"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_q0ros"]
 [ext_resource type="PackedScene" uid="uid://bc6uqt82umjye" path="res://player.tscn" id="1_swm1l"]
+[ext_resource type="PackedScene" uid="uid://dbgdegibmp3c" path="res://astroid.tscn" id="2_2oqjj"]
 [ext_resource type="Texture2D" uid="uid://epmb3d2gyw07" path="res://assets/textures/background/stars.PNG" id="2_gcxp6"]
 [ext_resource type="Texture2D" uid="uid://bgmanav3kid1b" path="res://assets/textures/background/Paint Layer 1.PNG" id="3_3g06n"]
+[ext_resource type="Shader" path="res://assets/shaders/vhs_filter.gdshader" id="5_f26bm"]
 
 [sub_resource type="Environment" id="Environment_xqotd"]
 background_mode = 3
@@ -21,8 +23,39 @@ point_count = 2
 width = 36
 curve = SubResource("Curve_w57p0")
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ew5op"]
+shader = ExtResource("5_f26bm")
+shader_parameter/overlay = true
+shader_parameter/scanlines_opacity = 0.079
+shader_parameter/scanlines_width = 0.25
+shader_parameter/grille_opacity = 0.188
+shader_parameter/resolution = Vector2(600, 600)
+shader_parameter/pixelate = true
+shader_parameter/roll = true
+shader_parameter/roll_speed = 3.0
+shader_parameter/roll_size = 19.494
+shader_parameter/roll_variation = 0.919
+shader_parameter/distort_intensity = 0.001
+shader_parameter/noise_opacity = 0.01
+shader_parameter/noise_speed = 2.0
+shader_parameter/static_noise_intensity = 0.004
+shader_parameter/aberration = 0.03
+shader_parameter/brightness = 1.0
+shader_parameter/discolor = true
+shader_parameter/warp_amount = 0.0
+shader_parameter/clip_warp = false
+shader_parameter/vignette_intensity = 0.2
+shader_parameter/vignette_opacity = 0.0
+
+[sub_resource type="Curve2D" id="Curve2D_65tfe"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 601, 0, 0, 0, 0, 0, 600, 600, 0, 0, 0, 0, 0, 600, 0, 0, 0, 0, 0, -1)
+}
+point_count = 5
+
 [node name="main" type="Node2D"]
 script = ExtResource("1_q0ros")
+astroid = ExtResource("2_2oqjj")
 metadata/_edit_vertical_guides_ = [240.0, 240.0]
 metadata/_edit_horizontal_guides_ = [30.0, 30.0]
 
@@ -32,28 +65,76 @@ environment = SubResource("Environment_xqotd")
 [node name="player" parent="." instance=ExtResource("1_swm1l")]
 position = Vector2(303, 299)
 
-[node name="background" type="Node2D" parent="."]
-position = Vector2(300, 300)
+[node name="world" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 300.0
+offset_top = 300.0
+offset_right = 300.0
+offset_bottom = 300.0
 
-[node name="background" type="Sprite2D" parent="background"]
+[node name="background" type="Sprite2D" parent="world"]
 scale = Vector2(16.6944, 600.5)
 texture = SubResource("CurveTexture_y3gob")
 
-[node name="overlay" type="Sprite2D" parent="background"]
-modulate = Color(1, 1, 1, 0.192157)
+[node name="nebulas" type="Node2D" parent="world"]
 position = Vector2(-2, 71)
 scale = Vector2(1.1, 1.1)
+
+[node name="nebula" type="Sprite2D" parent="world/nebulas"]
+modulate = Color(1, 1, 1, 0.192157)
 texture = ExtResource("3_3g06n")
 
-[node name="stars" type="Node2D" parent="background"]
+[node name="nebula2" type="Sprite2D" parent="world/nebulas"]
+modulate = Color(1, 1, 1, 0.192157)
+position = Vector2(587.273, -111.818)
+rotation = -3.14094
+scale = Vector2(1.08986, 1.1)
+texture = ExtResource("3_3g06n")
+
+[node name="stars" type="Node2D" parent="world"]
 modulate = Color(1, 1, 1, 0.0745098)
 
-[node name="stars1" type="Sprite2D" parent="background/stars"]
+[node name="stars1" type="Sprite2D" parent="world/stars"]
+position = Vector2(0, -9)
+rotation = 0.0180462
 texture = ExtResource("2_gcxp6")
 
-[node name="stars2" type="Sprite2D" parent="background/stars"]
+[node name="stars2" type="Sprite2D" parent="world/stars"]
 position = Vector2(565, 0)
 rotation = 1.57567
 texture = ExtResource("2_gcxp6")
 
-[node name="sidebars" type="Node2D" parent="."]
+[node name="vhs-overlay" type="ColorRect" parent="world"]
+modulate = Color(0.666439, 0.000332776, 0.666434, 1)
+self_modulate = Color(0.738367, 0.000416812, 0.738362, 1)
+z_index = 4096
+material = SubResource("ShaderMaterial_ew5op")
+layout_mode = 0
+offset_left = -300.0
+offset_top = -300.0
+offset_right = 300.0
+offset_bottom = 300.0
+
+[node name="purple-overlay" type="ColorRect" parent="world"]
+z_index = 4096
+layout_mode = 0
+offset_left = -301.0
+offset_top = -306.0
+offset_right = 297.0
+offset_bottom = 298.0
+color = Color(0.411765, 0, 0.411765, 0.12549)
+
+[node name="astrioid_spawn" type="Node2D" parent="."]
+
+[node name="spawn_path" type="Path2D" parent="astrioid_spawn"]
+curve = SubResource("Curve2D_65tfe")
+
+[node name="pos" type="PathFollow2D" parent="astrioid_spawn/spawn_path"]
+position = Vector2(0, -1)
+rotation = 0.00166389
+
+[node name="spawn_timer" type="Timer" parent="astrioid_spawn"]
+one_shot = true
+
+[connection signal="timeout" from="astrioid_spawn/spawn_timer" to="." method="_on_spawn_timer_timeout"]
