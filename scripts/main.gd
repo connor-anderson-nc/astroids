@@ -9,6 +9,7 @@ var spawn_wait_times = [1, 3]
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	spawn_timer.start()
+	get_tree().paused = true
 
 
 func _on_spawn_timer_timeout() -> void:
@@ -29,6 +30,8 @@ func _process(delta: float) -> void:
 	move_background($world/stars/stars2, background_speed, 450, 300)
 	move_background($world/nebulas/nebula, background_speed/2, 475, 300)
 	move_background($world/nebulas/nebula2, background_speed/2, 475, 300)
+	
+	# score counter
 
 func move_background(sprite, speed, r, rt):
 	sprite.position.x -= speed * get_process_delta_time()
@@ -51,4 +54,25 @@ func spawn_astroid():
 	temp_astroid.rotation = direction
 	temp_astroid.linear_velocity = velocity
 	temp_astroid.angular_velocity = spin
+	temp_astroid.add_to_group("astroids")
 	add_child(temp_astroid)
+
+func _on_player_hit() -> void:
+	Globals.HP -= 1
+	var heart = get_node("UI/hp_bar/heart" + str(Globals.max_HP - Globals.HP))
+	if heart:
+		heart.queue_free()
+		$Camera2D.add_trauma(0.2 * (Globals.max_HP - Globals.HP))
+	
+	if Globals.HP <= 0:
+		$menus/end/score.text = str(Globals.score)
+		$menus/end.visible = true
+		await get_tree().create_timer(0.8).timeout
+		get_tree().paused = true
+
+func _on_restart_button_down() -> void:
+	get_tree().reload_current_scene()
+
+func _on_start_button_down() -> void:
+	$menus/start.visible = false
+	get_tree().paused = false

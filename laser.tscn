@@ -1,5 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://1h1uoybk7xxw"]
+[gd_scene load_steps=6 format=3 uid="uid://1h1uoybk7xxw"]
 
+[ext_resource type="Script" path="res://scripts/laser.gd" id="1_c7282"]
 [ext_resource type="Texture2D" uid="uid://n8141opbuj7w" path="res://assets/textures/laser.png" id="1_nvk6p"]
 [ext_resource type="Texture2D" uid="uid://ndnslxfwtntx" path="res://assets/textures/laser_light_area.png" id="2_xuoqj"]
 
@@ -13,6 +14,7 @@ polygon = PackedVector2Array(-2.5, 3, -2.5, -3, 2.5, -3, 2.5, 3)
 collision_layer = 2
 mass = 0.001
 gravity_scale = 0.0
+script = ExtResource("1_c7282")
 
 [node name="Laser" type="Sprite2D" parent="."]
 scale = Vector2(0.8, 1)
@@ -33,3 +35,5 @@ height = 10.0
 [node name="LightOccluder2D" type="LightOccluder2D" parent="."]
 scale = Vector2(0.8, 1)
 occluder = SubResource("OccluderPolygon2D_v0uyk")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

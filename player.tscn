@@ -80,3 +80,16 @@ position = Vector2(-8, -21)
 
 [node name="laser_start2" type="Marker2D" parent="."]
 position = Vector2(8, -21)
+
+[node name="hit_detector" type="Area2D" parent="."]
+scale = Vector2(1.01, 1.01)
+
+[node name="Collider" type="CollisionPolygon2D" parent="hit_detector"]
+polygon = PackedVector2Array(8, -19, 13, -15, 17, -9, 18, -1, 20, 12, 19, 17, 12, 19, 8, 13, -7, 13, -12, 19, -19, 17, -20, 11, -18, -1, -17, -9, -13, -15, -8, -19)
+
+[node name="invincibility_timer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="hit" from="." to="." method="_on_hit"]
+[connection signal="body_entered" from="hit_detector" to="." method="_on_hit_detector_body_entered"]
+[connection signal="timeout" from="invincibility_timer" to="." method="_on_invincibility_timer_timeout"]

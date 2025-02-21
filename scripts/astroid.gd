@@ -17,17 +17,19 @@ func _ready() -> void:
 	$Collider.set_deferred("polygon", $temp_polygon_holder.polygon)
 	$Area2D/Collider2.set_deferred("polygon", $temp_polygon_holder.polygon)
 	
-	if self.has_meta("scale"):
-		$Sprite2D.scale = self.get_meta("scale")
-		$Area2D/Collider2.scale = self.get_meta("scale") * 1.3
-		$Collider.scale = self.get_meta("scale")
-		print(self.get_meta("scale"))
+	var scaler
+	var area_scaler
+	
+	if self.has_meta("gen"):
+		scaler = randf_range(1.5/(self.get_meta("gen")/1.3), 2.4 / (self.get_meta("gen")/1.8))
+		area_scaler = self.get_meta("gen")
 	else:
-		var scale = randf_range(1.5, 2.4)
-		$Sprite2D.scale = Vector2.ONE * scale
-		$Area2D/Collider2.scale = Vector2.ONE * scale * 1.05
-		$Collider.scale = Vector2.ONE * scale
-		print(scale)
+		scaler = randf_range(1.5, 2.4)
+		area_scaler = 1
+
+	$Sprite2D.scale = Vector2.ONE * scaler
+	$Area2D/Collider2.scale = Vector2.ONE * scaler * (1 + 0.05 * area_scaler)
+	$Collider.scale = Vector2.ONE * scaler
 
 func _on_area_2d_body_entered(body: Node2D) -> void:
 	
@@ -36,10 +38,6 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 	
 	Globals.score += 1
 	body.queue_free()
-	
-	if self.scale.x < 1:
-		queue_free()
-		return
 	
 	var child1 = ASTROIDS.instantiate()
 	var child2 = ASTROIDS.instantiate()
@@ -57,13 +55,22 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 	child1.position = self.global_position + offset
 	child2.position = self.global_position + offset2
 	
-	child1.set_meta("scale", self.scale / 1.5)
-	child2.set_meta("scale", self.scale / 1.5)
+	if self.has_meta("gen"):
+		child1.set_meta("gen", self.get_meta("gen") + 1)
+		child2.set_meta("gen", self.get_meta("gen") + 1)
+	else:
+		child1.set_meta("gen", 2)
+		child2.set_meta("gen", 2)
+	
+	child1.add_to_group("astroids")
+	child1.add_to_group("astroids")
 	
 	self.visible = false
-	self.call_deferred("add_sibling", child1)
-	self.call_deferred("add_sibling", child2)
 	
+	if !self.has_meta("gen") || self.get_meta("gen") < 3:
+		self.call_deferred("add_sibling", child1)
+		self.call_deferred("add_sibling", child2)
+
 	queue_free()
 
 ######### setup functions ###########
@@ -86,3 +93,6 @@ func _choose_texture(sprite):
 			resources.append(load(sprites + "/" + file_name))
 
 	sprite.texture = resources.pick_random()
+
+func _on_timer_timeout() -> void:
+	queue_free()

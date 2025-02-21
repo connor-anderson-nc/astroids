@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+signal hit
+
 @export var laser : PackedScene
 
 const SPEED = 300.0
@@ -7,6 +9,8 @@ const ROTATE_SPEED = 3.0
 const DECELERATION = 1.0
 const ACCELERATION = 5.0
 const BOOST = 100.0
+
+var invincible = false
 
 func _physics_process(delta: float) -> void:
 	# rotation
@@ -62,3 +66,12 @@ func _physics_process(delta: float) -> void:
 	$trails/trail_right.process_material.set("gravity", self.transform.y * trail_mag)
 
 	move_and_slide()
+
+func _on_hit_detector_body_entered(body: Node2D) -> void:
+	if body.is_in_group("astroids") and !invincible:
+		hit.emit()
+		invincible = true
+		$invincibility_timer.start()
+
+func _on_invincibility_timer_timeout() -> void:
+	invincible = false
